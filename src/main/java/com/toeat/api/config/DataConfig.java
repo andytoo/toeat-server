@@ -12,7 +12,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("app.properties")
+@PropertySource("classpath:/app.properties")
 public class DataConfig {
 
     @Autowired
