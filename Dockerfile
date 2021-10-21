@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM arm64v8/openjdk:11-jre
 ENV APP_HOME=/usr/app/
 WORKDIR $APP_HOME
 COPY build/libs/*.jar app.jar
