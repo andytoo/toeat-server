@@ -47,7 +47,10 @@ public class UserController {
     @PostMapping("/refreshToken")
     public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> map) {
         String refreshToken = (String) map.get("refresh_token");//TODO
-        return ResponseEntity.ok(new HashMap<>());
+
+
+        return null;
+//        return ResponseEntity.ok(generateJWTToken(user));
     }
 
     private Map<String, String> generateJWTToken(User user) {

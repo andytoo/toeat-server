@@ -21,7 +21,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        String authHeader = httpRequest.getHeader("Authorization");//TODO REFRESH TOKEN
+        String authHeader = httpRequest.getHeader("Authorization");
         if (authHeader != null) {
             String[] authHeaderArr = authHeader.split("Bearer ");
             if (authHeaderArr.length > 1 && authHeaderArr != null) {
@@ -44,5 +44,4 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
         }
         chain.doFilter(request, response);
     }
-
 }
