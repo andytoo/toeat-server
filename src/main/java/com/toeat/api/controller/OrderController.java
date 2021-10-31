@@ -22,13 +22,16 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/save")
-    public Optional<Order> saveOrder(@RequestBody Map<String, Object> orderMap) {
-        String phone = (String) orderMap.get("phone");
-        UUID restaurantId = UUID.fromString((String) orderMap.get("restaurantId"));
-        List<Item> itemList = (List<Item>) orderMap.get("itemList");
-        int total = (int) orderMap.get("total");
-        return orderService.saveOrder(phone, restaurantId, itemList, total);
+    //User
+    @GetMapping("/phone/{phone}")
+    public List<Map<String, Object>> getOrderByPhone(@PathVariable("phone") String phone) {
+        return orderService.getOrdersByPhone(phone);
+    }
+
+    //Client
+    @GetMapping("/all/{restaurantId}")
+    public List<Order> getAllOrdersByRestaurantId(@PathVariable("restaurantId") UUID restaurantId) {
+        return orderService.findAllOrdersByRestaurantId(restaurantId);
     }
 
     @GetMapping("/{orderId}")
@@ -36,8 +39,12 @@ public class OrderController {
         return orderService.findOrderById(orderId);
     }
 
-    @GetMapping("/all/{restaurantId}")
-    public List<Order> getAllOrdersByRestaurantId(@PathVariable("restaurantId") UUID restaurantId) {
-        return orderService.findAllOrdersByRestaurantId(restaurantId);
+    @PostMapping("/save")
+    public Optional<Order> saveOrder(@RequestBody Map<String, Object> orderMap) {
+        String phone = (String) orderMap.get("phone");
+        UUID restaurantId = UUID.fromString((String) orderMap.get("restaurantId"));
+        List<Item> itemList = (List<Item>) orderMap.get("itemList");
+        int total = (int) orderMap.get("total");
+        return orderService.saveOrder(phone, restaurantId, itemList, total);
     }
 }

@@ -9,13 +9,15 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table("users")
+@Table("clients")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class User {
+public class Client {
     @Id
     private String phone;
     private String name;
     private String password;
+    @Column("restaurantid")//TODO
+    private UUID restaurantId;
 }

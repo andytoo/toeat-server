@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class OrderRepositoryImpl implements OrderCustomRepository {
@@ -31,8 +32,19 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
         return new Timestamp(new Date().getTime());
     }
 
+    //User
+    private final static String SQL_QUERY = "select orders.id orderId, rest.id restaurantId, rest.name restaurantName, orders.phone phone, orders.itemList itemList, orders.total total from orders join restaurants rest on orders.restaurantid = rest.id where orders.phone = ?";
+
+    //Client
     private final static String SQL_INSERT = "insert into orders (id, phone, restaurantId, itemList, total, date) values (?, ?, ?, to_json(?::json), ?, ?)";
 
+    //User
+    @Override
+    public List<Map<String, Object>> findByPhone(String phone) {
+        return jdbcTemplate.queryForList(SQL_QUERY, new String[]{phone});
+    }
+
+    //Client
     @Override
     public UUID save(UUID id, String phone, UUID restaurantId, List<Item> itemList, int total) {
         try {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,10 +19,16 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    // User
     @Override
-    public Optional<Order> saveOrder(String phone, UUID restaurantId, List<Item> itemList, int total) {
-        UUID orderId = orderRepository.save(UUID.randomUUID(), phone, restaurantId, itemList, total);//TODO
-        return orderRepository.findById(orderId);
+    public List<Map<String, Object>> getOrdersByPhone(String phone) {
+        return orderRepository.findByPhone(phone);
+    }
+
+    // Client
+    @Override
+    public List<Order> findAllOrdersByRestaurantId(UUID restaurantId) {
+        return orderRepository.findByRestaurantId(restaurantId);
     }
 
     @Override
@@ -30,7 +37,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAllOrdersByRestaurantId(UUID restaurantId) {
-        return orderRepository.findByRestaurantId(restaurantId);
+    public Optional<Order> saveOrder(String phone, UUID restaurantId, List<Item> itemList, int total) {
+        UUID orderId = orderRepository.save(UUID.randomUUID(), phone, restaurantId, itemList, total);//TODO
+        return orderRepository.findById(orderId);
     }
 }

@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-import java.util.Optional;
-
 @Configuration
 @PropertySource("classpath:/app.properties")
 public class AppConfig {
@@ -25,5 +23,4 @@ public class AppConfig {
     public Gson gson() {
         return new Gson();
     }
-
 }

@@ -1,25 +1,23 @@
 package com.toeat.api.controller;
 
-import com.toeat.api.model.User;
+import com.toeat.api.model.Client;
+import com.toeat.api.service.ClientService;
 import com.toeat.api.service.UserService;
 import com.toeat.api.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/client")
+public class ClientController {
 
     @Autowired
-    private UserService userService;
+    private ClientService clientService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -29,9 +27,9 @@ public class UserController {
         String phone = (String) userMap.get("phone");
         String password = (String) userMap.get("password");
 
-        User user = userService.signIn(phone, password);
+        Client client = clientService.signIn(phone, password);
 
-        return ResponseEntity.ok(jwtUtil.generateJWTToken(user));
+        return ResponseEntity.ok(jwtUtil.generateJWTToken(client));
     }
 
     @PostMapping("/signUp")
@@ -41,10 +39,10 @@ public class UserController {
         String password = (String) userMap.get("password");
         String confirm = (String) userMap.get("confirm");
 
-        User user = userService.signUp(phone, name, password, confirm);
+        Client client = clientService.signUp(phone, name, password, confirm);
 
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/signUp").toUriString());
-        return ResponseEntity.created(uri).body(jwtUtil.generateJWTToken(user));
+        return ResponseEntity.created(uri).body(jwtUtil.generateJWTToken(client));
     }
 
     @PostMapping("/refreshToken")

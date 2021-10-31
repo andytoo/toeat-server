@@ -1,10 +1,10 @@
 package com.toeat.api.service;
 
+import com.toeat.api.Repository.ClientRepository;
 import com.toeat.api.Repository.RestaurantRepository;
 import com.toeat.api.Repository.UserRepository;
 import com.toeat.api.exceptions.EtAuthException;
 import com.toeat.api.model.Client;
-import com.toeat.api.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,20 +15,20 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class ClientServiceImpl implements ClientService {
 
     @Autowired
-    private UserRepository userRepository;
+    private ClientRepository clientRepository;
 
     @Autowired
     private RestaurantRepository restaurantRepository;
 
     @Override
-    public User signIn(String phone, String password) throws EtAuthException {
-        Optional<User> user = userRepository.findByPhone(phone);
+    public Client signIn(String phone, String password) throws EtAuthException {
+        Optional<Client> user = clientRepository.findByPhone(phone);
 
         if (user.isEmpty()) {
-            throw new EtAuthException("User not found");
+            throw new EtAuthException("Client not found");
         } else if (BCrypt.checkpw(password, user.get().getPassword())) {
             return user.get();
         } else {
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User signUp(String phone, String name, String password, String confirm) throws EtAuthException {
+    public Client signUp(String phone, String name, String password, String confirm) throws EtAuthException {
 
         //TODO VALIDATION
 //        Pattern pattern = Pattern.compile("^(.+)@(.+)$");
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 //        if (!pattern.matcher(email).matches())
 //            throw new EtAuthException("Invalid email format");
 
-        int phoneCnt = userRepository.countByPhone(phone);
+        int phoneCnt = clientRepository.countByPhone(phone);
         if (phoneCnt > 0)
             throw new EtAuthException(phone + " is already taken");
 
@@ -57,10 +57,15 @@ public class UserServiceImpl implements UserService {
 //            throw new EtAuthException("email already in use");
 
         String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));//TODO gen salt
-        User user = userRepository.save(phone, name, hashPassword);
+        Client client = clientRepository.save(phone, name, hashPassword, UUID.randomUUID());//TODO UUID GENERATOR
+        UUID restaurantId = restaurantRepository.createRest(client.getRestaurantId());
 
 //        log.info("Saving new role {} to the database", role.getName());
 
-        return user;
+        if (!restaurantId.equals(client.getRestaurantId())) {
+            //TODO throw exception
+        }
+
+        return client;
     }
 }

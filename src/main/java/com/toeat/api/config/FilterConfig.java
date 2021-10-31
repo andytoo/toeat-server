@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FilterConfig {
-    @Bean
-    public FilterRegistrationBean<JWTAuthenticationFilter> apiFilter() {
-        FilterRegistrationBean<JWTAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
-        JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
-        registrationBean.setFilter(jwtAuthenticationFilter);
-        registrationBean.addUrlPatterns("/api/*");
-        return registrationBean;
-    }
+//    @Bean
+//    public FilterRegistrationBean<JWTAuthenticationFilter> apiFilter() {
+//        FilterRegistrationBean<JWTAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+//        JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
+//        registrationBean.setFilter(jwtAuthenticationFilter);
+//        registrationBean.addUrlPatterns("/api/*");
+//        return registrationBean;
+//    }
 }
