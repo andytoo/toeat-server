@@ -7,10 +7,9 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface OrderCustomRepository {
-
     //User
     List<Map<String, Object>> findByPhone(String phone);
 
     //Client
-    UUID save(UUID id, String phone, UUID restaurantId, List<Item> itemList, int total);
+    UUID save(UUID id, String phone, UUID restaurantId, String status, List<Item> itemList, int total);
 }

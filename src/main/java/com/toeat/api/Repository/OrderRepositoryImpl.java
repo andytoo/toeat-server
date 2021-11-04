@@ -33,10 +33,12 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
     }
 
     //User
-    private final static String SQL_QUERY = "select orders.id orderId, rest.id restaurantId, rest.name restaurantName, orders.phone phone, orders.itemList itemList, orders.total total from orders join restaurants rest on orders.restaurantid = rest.id where orders.phone = ?";
+    private final static String SQL_QUERY = "select orders.id orderId, rest.id restaurantId, rest.name restaurantName, orders.phone phone, orders.status status, orders.itemList itemList, orders.total total from orders join restaurants rest on orders.restaurantid = rest.id where orders.phone = ?";
 
     //Client
-    private final static String SQL_INSERT = "insert into orders (id, phone, restaurantId, itemList, total, date) values (?, ?, ?, to_json(?::json), ?, ?)";
+    private final static String SQL_INSERT = "insert into orders (id, phone, restaurantId, status, itemList, total, date) values (?, ?, ?, ?, to_json(?::json), ?, ?)";
+
+//    private final static String SQL_UPDATE = "update orders set status = ? where id = ?";
 
     //User
     @Override
@@ -46,7 +48,7 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 
     //Client
     @Override
-    public UUID save(UUID id, String phone, UUID restaurantId, List<Item> itemList, int total) {
+    public UUID save(UUID id, String phone, UUID restaurantId, String status, List<Item> itemList, int total) {
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
@@ -54,9 +56,10 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
                 ps.setObject(1, id);
                 ps.setString(2, phone);
                 ps.setObject(3, restaurantId);
-                ps.setString(4, gson.toJson(itemList));
-                ps.setInt(5, total);
-                ps.setTimestamp(6, this.getCurrentTimestamp());
+                ps.setObject(4, status);
+                ps.setString(5, gson.toJson(itemList));
+                ps.setInt(6, total);
+                ps.setTimestamp(7, this.getCurrentTimestamp());
                 return ps;
             }, keyHolder);
             return (UUID) keyHolder.getKeys().get("id");

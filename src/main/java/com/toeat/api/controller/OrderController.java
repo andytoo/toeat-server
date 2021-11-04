@@ -43,8 +43,25 @@ public class OrderController {
     public Optional<Order> saveOrder(@RequestBody Map<String, Object> orderMap) {
         String phone = (String) orderMap.get("phone");
         UUID restaurantId = UUID.fromString((String) orderMap.get("restaurantId"));
+//        String status = (String) orderMap.get("status");
+        String status = "00";
         List<Item> itemList = (List<Item>) orderMap.get("itemList");
         int total = (int) orderMap.get("total");
-        return orderService.saveOrder(phone, restaurantId, itemList, total);
+
+        Optional<Order> order = orderService.saveOrder(phone, restaurantId, status, itemList, total);
+
+        if (order.isPresent()) {
+            orderService.notifyRestaurant(restaurantId, order.get());
+        }
+
+        return order;
+    }
+
+    @PostMapping("/update")
+    public Optional<Order> updateOrder(@RequestBody Map<String, Object> orderMap) {
+        UUID id = UUID.fromString((String) orderMap.get("id"));
+        String status = (String) orderMap.get("status");
+        Optional<Order> order = orderService.updateOrder(id, status);
+        return order;
     }
 }

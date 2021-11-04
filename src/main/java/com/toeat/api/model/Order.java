@@ -17,6 +17,7 @@ public class Order {
     private UUID id;
     private String phone;
     private UUID restaurantId;
+    private String status;
     private List<Item> itemList;
     private int total;
     private Timestamp date;

@@ -22,6 +22,7 @@ public class OrderRowMapper implements RowMapper<Order> {
         return new Order(rs.getObject("id", UUID.class),
                          rs.getString("phone"),
                          rs.getObject("restaurantId", UUID.class),
+                         rs.getObject("status").toString(),
                          this.jsonCartConverter(new JSONArray(rs.getString("itemList"))),
                          rs.getInt("total"),
                          rs.getTimestamp("date"));

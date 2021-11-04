@@ -3,6 +3,8 @@ package com.toeat.api.Repository;
 import com.toeat.api.model.Order;
 import com.toeat.api.model.OrderRowMapper;
 import com.toeat.api.model.Item;
+import com.toeat.api.model.RestaurantRowMapper;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -28,4 +30,8 @@ public interface OrderRepository extends CrudRepository<Order, UUID>, OrderCusto
 
     @Query(value = "select * from orders where id = :id", rowMapperClass = OrderRowMapper.class)
     Optional<Order> findById(UUID id);
+
+    @Modifying
+    @Query(value = "update orders set status = :status where id = :id")
+    int updateOrder(UUID id, String status);
 }
