@@ -12,12 +12,10 @@ public interface OrderService {
 
     //User
     List<Map<String, Object>> getOrdersByPhone(String phone);
-    void notifyRestaurant(UUID restaurantId, Order order);
 
     // Client
     List<Order> findAllOrdersByRestaurantId(UUID restaurantId);
     Optional<Order> findOrderById(UUID id);
     Optional<Order> saveOrder(String phone, UUID restaurantId, String status, List<Item> itemList, int total);
     Optional<Order> updateOrder(UUID id, String status);
-    void notifyUser(Order order);
 }

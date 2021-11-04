@@ -49,11 +49,6 @@ public class OrderController {
         int total = (int) orderMap.get("total");
 
         Optional<Order> order = orderService.saveOrder(phone, restaurantId, status, itemList, total);
-
-        if (order.isPresent()) {
-            orderService.notifyRestaurant(restaurantId, order.get());
-        }
-
         return order;
     }
 

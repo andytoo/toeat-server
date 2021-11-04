@@ -38,8 +38,6 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
     //Client
     private final static String SQL_INSERT = "insert into orders (id, phone, restaurantId, status, itemList, total, date) values (?, ?, ?, ?, to_json(?::json), ?, ?)";
 
-//    private final static String SQL_UPDATE = "update orders set status = ? where id = ?";
-
     //User
     @Override
     public List<Map<String, Object>> findByPhone(String phone) {

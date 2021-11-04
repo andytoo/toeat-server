@@ -29,11 +29,6 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByPhone(phone);
     }
 
-    @Override
-    public void notifyRestaurant(UUID restaurantId, Order order) {
-        messagingTemplate.convertAndSend("/topic/order/"+restaurantId.toString(), order);
-    }
-
     // Client
     @Override
     public List<Order> findAllOrdersByRestaurantId(UUID restaurantId) {
@@ -47,8 +42,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<Order> saveOrder(String phone, UUID restaurantId, String status, List<Item> itemList, int total) {
-        UUID orderId = orderRepository.save(UUID.randomUUID(), phone, restaurantId, status, itemList, total);//TODO
-        return orderRepository.findById(orderId);
+        UUID orderId = orderRepository.save(UUID.randomUUID(), phone, restaurantId, status, itemList, total);
+        Optional<Order> order = orderRepository.findById(orderId);
+        messagingTemplate.convertAndSend("/topic/order/"+restaurantId.toString(), order);
+        return order;
     }
 
     @Override
@@ -57,10 +54,5 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> order = orderRepository.findById(id);
         messagingTemplate.convertAndSend("/topic/order/" + order.get().getPhone(), order);
         return order;
-    }
-
-    @Override
-    public void notifyUser(Order order) {
-
     }
 }
