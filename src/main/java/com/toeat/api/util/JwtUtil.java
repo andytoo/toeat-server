@@ -1,13 +1,17 @@
 package com.toeat.api.util;
 
+import com.google.gson.Gson;
+import com.toeat.api.exceptions.EtAuthException;
 import com.toeat.api.model.Client;
 import com.toeat.api.model.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +20,17 @@ import java.util.Map;
 public class JwtUtil {
 
     public static final String JWT_SECRET_KEY = "toeatapisecretkey";//TODO how to store it securely
-    public static final long ACCESS_TOKEN_VALIDITY =  2 * 60 * 1000;// 2 minutes
+    public static final long ACCESS_TOKEN_VALIDITY =  1 * 60 * 1000;// 1 minutes
     public static final long REFRESH_TOKEN_VALIDITY = 1 * 60 * 60 * 1000;// 1 HOUR
+
+//    public static final long ACCESS_TOKEN_VALIDITY =  1 * 60 * 1000;
+//    public static final long REFRESH_TOKEN_VALIDITY = 2 * 60 * 1000;
 
     public static final String HEADER = "Authorization";
     public static final String TOKEN_PREFIX  = "Bearer ";
+
+    @Autowired
+    private Gson gson;
 
     public static Map<String, String> generateJWTToken(User user) {
         long timestamp = System.currentTimeMillis();
@@ -75,17 +85,20 @@ public class JwtUtil {
         return map;
     }
 
-    public static void getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(HEADER);
-        if (token != null) {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(JWT_SECRET_KEY)
-                    .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
-                    .getBody();
+    public void verifyExpiration(String token) throws EtAuthException {
+        try {
+            Claims claims = Jwts.parser().setSigningKey(JwtUtil.JWT_SECRET_KEY).parseClaimsJws(token).getBody();
+            Date expDate = claims.getExpiration();
 
-            // 拿用户名
-            String user = claims.getSubject();
-            System.out.println(user);
+            if (expDate.toInstant().compareTo(Instant.now()) < 0) {
+                String phone = (String) claims.get("phone");
+                String name = (String)  claims.get("name");
+                String restaurantId = (String)  claims.get("restaurantId");
+                System.out.println();
+            }
+
+        } catch (ExpiredJwtException e) {
+            throw new EtAuthException("invalid/expired token");
         }
     }
 }

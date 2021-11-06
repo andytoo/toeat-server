@@ -28,7 +28,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/{restaurantId}")
-    public Optional<Restaurant> findOrderById(@PathVariable("restaurantId") UUID id) {
+    public Optional<Restaurant> findRestaurantById(@PathVariable("restaurantId") UUID id) {
         return restaurantService.findById(id);
     }
 

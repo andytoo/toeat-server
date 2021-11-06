@@ -18,27 +18,39 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
 
-        String authHeader = httpRequest.getHeader("Authorization");
-        if (authHeader != null) {
-            String[] authHeaderArr = authHeader.split("Bearer ");
-            if (authHeaderArr.length > 1 && authHeaderArr != null) {
-                String token = authHeaderArr[1];
-                try {
-                    Claims claims = Jwts.parser().setSigningKey(JwtUtil.JWT_SECRET_KEY)
-                            .parseClaimsJws(token).getBody();
-//                    httpRequest.setAttribute("phone", );
-                } catch (Exception e) {
-                    httpResponse.sendError(HttpStatus.FORBIDDEN.value(), "invalid/expired token");
+        if (this.isPreflight(httpRequest)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            String authHeader = httpRequest.getHeader("Authorization");
+            if (authHeader != null) {
+                String[] authHeaderArr = authHeader.split("Bearer ");
+                if (authHeaderArr.length > 1 && authHeaderArr != null) {
+                    String token = authHeaderArr[1];
+                    try {
+                        Claims claims = Jwts.parser().setSigningKey(JwtUtil.JWT_SECRET_KEY)
+                                .parseClaimsJws(token).getBody();
+                    } catch (Exception e) {
+                        httpResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "invalid/expired token");
+                        return;
+                    }
+                } else {
+                    httpResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "Authorization token must be Bearer [token]");
                     return;
                 }
             } else {
-                httpResponse.sendError(HttpStatus.FORBIDDEN.value(), "Authorization token must be Bearer [token]");
+                httpResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "Authorization token must be provided");
                 return;
             }
-        } else {
-            httpResponse.sendError(HttpStatus.FORBIDDEN.value(), "Authorization token must be provided");
-            return;
+            filterChain.doFilter(servletRequest, servletResponse);
         }
-        filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    /**
+     * Checks if this is a X-domain pre-flight request.
+     * @param request
+     * @return
+     */
+    private boolean isPreflight(HttpServletRequest request) {
+        return "OPTIONS".equals(request.getMethod());
     }
 }
