@@ -85,16 +85,23 @@ public class JwtUtil {
         return map;
     }
 
-    public void verifyExpiration(String token) throws EtAuthException {
+    public Map<String, String> verifyClientToken(String token) throws EtAuthException {
         try {
             Claims claims = Jwts.parser().setSigningKey(JwtUtil.JWT_SECRET_KEY).parseClaimsJws(token).getBody();
             Date expDate = claims.getExpiration();
 
-            if (expDate.toInstant().compareTo(Instant.now()) < 0) {
+            if (expDate.toInstant().compareTo(Instant.now()) > 0) {
                 String phone = (String) claims.get("phone");
                 String name = (String)  claims.get("name");
                 String restaurantId = (String)  claims.get("restaurantId");
-                System.out.println();
+
+                Map<String, String> map = new HashMap<>();
+                map.put("phone", phone);
+                map.put("name", name);
+                map.put("restaurantId", restaurantId);
+                return map;
+            } else {
+                throw new EtAuthException("invalid/expired token");
             }
 
         } catch (ExpiredJwtException e) {

@@ -47,14 +47,7 @@ public class UserController {
         return ResponseEntity.created(uri).body(jwtUtil.generateJWTToken(user));
     }
 
-    @PostMapping("/refreshToken")
-    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> map) {
-        String refreshToken = (String) map.get("refreshToken");//TODO
-        jwtUtil.verifyExpiration(refreshToken);
 
-        return null;
-//        return ResponseEntity.ok(generateJWTToken(user));
-    }
 
 
 

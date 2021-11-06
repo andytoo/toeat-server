@@ -4,6 +4,7 @@ import com.toeat.api.Repository.ClientRepository;
 import com.toeat.api.Repository.RestaurantRepository;
 import com.toeat.api.Repository.UserRepository;
 import com.toeat.api.exceptions.EtAuthException;
+import com.toeat.api.exceptions.ModuleException;
 import com.toeat.api.model.Client;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,17 @@ public class ClientServiceImpl implements ClientService {
         }
 
         return client;
+    }
+
+    @Override
+    public Client findByPhone(String phone) throws ModuleException {
+
+        Optional<Client> client = clientRepository.findByPhone(phone);
+
+        if (client.isPresent()) {
+            return client.get();
+        } else {
+            throw new ModuleException("client not found");
+        }
     }
 }
