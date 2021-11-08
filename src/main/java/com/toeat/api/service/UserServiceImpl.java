@@ -3,6 +3,7 @@ package com.toeat.api.service;
 import com.toeat.api.Repository.RestaurantRepository;
 import com.toeat.api.Repository.UserRepository;
 import com.toeat.api.exceptions.EtAuthException;
+import com.toeat.api.exceptions.ModuleException;
 import com.toeat.api.model.Client;
 import com.toeat.api.model.User;
 import org.mindrot.jbcrypt.BCrypt;
@@ -62,5 +63,17 @@ public class UserServiceImpl implements UserService {
 //        log.info("Saving new role {} to the database", role.getName());
 
         return user;
+    }
+
+    @Override
+    public User findByPhone(String phone) throws ModuleException {
+
+        Optional<User> user = userRepository.findByPhone(phone);
+
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new ModuleException("user not found");
+        }
     }
 }

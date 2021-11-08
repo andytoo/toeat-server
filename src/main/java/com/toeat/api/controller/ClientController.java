@@ -48,10 +48,7 @@ public class ClientController {
     @PostMapping("/refreshToken")
     public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> map) {
         String refreshToken = (String) map.get("refreshToken");
-
-        Map<String, String> data = jwtUtil.verifyClientToken(refreshToken);
-        String phone = data.get("phone");
-
+        String phone = jwtUtil.verifyClientToken(refreshToken);
         Client client = clientService.findByPhone(phone);
         return ResponseEntity.ok(jwtUtil.generateJWTToken(client));
     }

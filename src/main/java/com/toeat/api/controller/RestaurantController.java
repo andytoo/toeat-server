@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/restaurant")
+//@RequestMapping("/api/restaurant")
 public class RestaurantController {
 
     @Autowired
@@ -22,47 +22,47 @@ public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
 
-    @GetMapping("/all")
+    @GetMapping("/restaurant/all")
     public List<Restaurant> getAllRestaurants() {
         return restaurantService.findAll();
     }
 
-    @GetMapping("/{restaurantId}")
+    @GetMapping("/api/restaurant/{restaurantId}")
     public Optional<Restaurant> findRestaurantById(@PathVariable("restaurantId") UUID id) {
         return restaurantService.findById(id);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/api/restaurant/update")
     @ResponseStatus(HttpStatus.CREATED)
     public void updateRestaurant(@RequestBody Restaurant restaurant) {
         restaurantService.updateRest(restaurant);
     }
 
-    @PostMapping("/insertMenu/{restaurantId}")
+    @PostMapping("/api/restaurant/insertMenu/{restaurantId}")
     @ResponseStatus(HttpStatus.CREATED)
     public Category insertRestaurantMenu(@PathVariable("restaurantId") UUID id, @RequestBody Category category) {
         return restaurantService.insertMenu(id, category);
     }
 
-    @PostMapping("/updateMenu/{restaurantId}")
+    @PostMapping("/api/restaurant/updateMenu/{restaurantId}")
     @ResponseStatus(HttpStatus.CREATED)
     public Category updateRestaurantMenu(@PathVariable("restaurantId") UUID id, @RequestBody Category category) {
         return restaurantService.updateMenu(id, category);
     }
 
-    @GetMapping("/image/{restaurantId}")
+    @GetMapping("/restaurant/image/{restaurantId}")
     public ResponseEntity<?> getImage(@PathVariable("restaurantId") UUID id) {
 //        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(restaurantService.getImage(id));
         return ResponseEntity.ok().body(restaurantService.getImage(id.toString()));
     }
 
-    @GetMapping("/image64/{restaurantId}")
+    @GetMapping("/api/restaurant/image64/{restaurantId}")
     public ResponseEntity<?> getImage64(@PathVariable("restaurantId") UUID id) {
 //        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(restaurantService.getImage(id));
         return ResponseEntity.ok().body(restaurantService.getImage64(id.toString()));
     }
 
-    @PostMapping("/upload/{restaurantId}")
+    @PostMapping("/api/restaurant/upload/{restaurantId}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> uploadImage(@PathVariable("restaurantId") UUID id, @RequestParam("file") MultipartFile file) {
         restaurantService.uploadImage(file, id.toString());

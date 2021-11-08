@@ -47,8 +47,11 @@ public class UserController {
         return ResponseEntity.created(uri).body(jwtUtil.generateJWTToken(user));
     }
 
-
-
-
-
+    @PostMapping("/refreshToken")
+    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody Map<String, String> map) {
+        String refreshToken = (String) map.get("refreshToken");
+        String phone = jwtUtil.verifyClientToken(refreshToken);
+        User user = userService.findByPhone(phone);
+        return ResponseEntity.ok(jwtUtil.generateJWTToken(user));
+    }
 }
